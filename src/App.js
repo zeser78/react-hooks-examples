@@ -4,13 +4,19 @@ import './App.css';
 import UseReducer from './UseReducer';
 import UseContext from './UseContext';
 import UseStatePrev from './useStatePrev';
+import UseEffectMultiple from './useEffectMultiples';
+import UseRef from './useRef';
+import ScrollExample from './ScrollExample';
 
 function App() {
   return (
     <div className="App">
       {/* <UseReducer/>
       <UseContext /> */}
-      <UseStatePrev />
+      {/* <UseStatePrev />
+      <UseEffectMultiple />
+      <UseRef /> */}
+      <ScrollExample />
     </div>
   );
 }
