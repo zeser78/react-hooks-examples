@@ -7,6 +7,7 @@ import UseStatePrev from './useStatePrev';
 import UseEffectMultiple from './useEffectMultiples';
 import UseRef from './useRef';
 import ScrollExample from './ScrollExample';
+import FirestoreStorageExample from './FirebaseStorageExample';
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
       {/* <UseStatePrev />
       <UseEffectMultiple />
       <UseRef /> */}
-      <ScrollExample />
+      {/* <ScrollExample /> */}
+      <FirestoreStorageExample />
     </div>
   );
 }
