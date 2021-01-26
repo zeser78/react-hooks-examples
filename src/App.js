@@ -7,7 +7,7 @@ import UseStatePrev from './useStatePrev';
 import UseEffectMultiple from './useEffectMultiples';
 import UseRef from './useRef';
 import ScrollExample from './ScrollExample';
-import FirestoreStorageExample from './FirebaseStorageExample';
+import FirestoreStorageExample from './FirebaseExample/FirebaseStorageExample';
 
 function App() {
   return (
