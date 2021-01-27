@@ -1,68 +1,144 @@
-import React, { useEffect, useState } from 'react'
-import { app } from '../firebase'
+import React, { useContext, useEffect, useState } from 'react'
+// import { BrowserRouter as Router, Switch, Route,  Redirect } from "react-router-dom"
+import { app } from "../firebase";
+import FirestoreStorageExample from './FirebaseStorageExample';
 import { AuthContext, AuthProvider } from './Auth'
+import {Router, Redirect } from "@reach/router"
 
+const NotFound = () => <p>Sorry, not found</p>
 
 const Home = () => {
 
     return (
-        <>
+     <>
 <h1>Home</h1>
 <AuthProvider>
+  <Router>
+  {/* <Switch> */}
+  <Login2 path="/" />
+      <PrivateRoute as={FirestoreStorageExample} path="/dash" />
+      {/* <PrivateRoute exact path="/" component={Dash} /> */}
+      {/* <PrivateRoute path="/storage" component={FirestoreStorageExample} /> */}
+      {/* <Route path="/login" component={Login2} /> */}
+     
+       {/* </Switch> */}
+       {/* <Login2 path="/login"/> */}
+       <NotFound default />
+  </Router>
 
 </AuthProvider>
+
         </>
     )
 }
 
-export default Home
+const db = app.firestore()
 
-const Login = () => {
+const Login2 = () => {
     const [user, setUser] = useState(null);
     const [authError, setAuthError] = useState(null);
 
   
-    const handlerSignIn = async () => {
-      const provider = new firebase.auth.GoogleAuthProvider();
+    const handlerSignIn = async (event) => {
+      event.preventDefault();
+      const {email, password } = event.target.elements
       try {
-        await firebase.auth().signInWithPopup(provider);
+        await app.auth().signInWithEmailAndPassword(email.value, password.value);
       } catch (error) {
-        setAuthError(error);
+setAuthError(error)
       }
     };
     
+    // const {currentUser } = useContext(AuthContext)
+
+    // console.log(currentUser)
 
     useEffect(() => {
         // to persist login
-        return firebase.auth().onAuthStateChanged((firebaseUser) => {
+        return app.auth().onAuthStateChanged((firebaseUser) => {
           if (firebaseUser) {
             const user = {
-              displayName: firebaseUser.displayName,
-              photoUrl: firebaseUser.photoURL,
+              // displayName: firebaseUser.displayName,
+              // photoUrl: firebaseUser.photoURL,
               uid: firebaseUser.uid,
             };
             setUser(user);
-            db.collection("users").doc(user.uid).set(user, { merge: true });
+            db.collection("usersExample").doc(user.uid).set(user, { merge: true });
           } else {
             setUser(null);
           }
         });
     },[])
         
-    const [currentUser, setCurrentUser] = useState(null)
+    // const [currentUser, setCurrentUser] = useState(null)
 
-      useEffect(() => {
-          app.auth().onAuthStateChanged(setCurrentUser)
-      },[])
+    //   useEffect(() => {
+    //       app.auth().onAuthStateChanged(setCurrentUser)
+    //   },[])
     
 
-    return (
-        <>
-<form onSubmit={handleLogIn}>
-    <label>Email</label>
-    <input name="email" type="email" placeholder="email" />
-
-</form>
-        </>
+    return user ? (
+      <Router>
+        {/* <Redirect from="" to="admin" /> */}
+        <FirestoreStorageExample path="/admin" />
+</Router>
+    ) : (
+      <Router>
+         {/* <Redirect from="/admin" to="/" /> */}
+      <Login path="/" handlerSignIn={handlerSignIn} />
+        </Router>
     )
+}
+
+
+export default Home
+
+const Login = ({handlerSignIn}) => {
+
+  return (
+    <>
+ <form onSubmit={handlerSignIn}>
+          <label>Email</label>
+          <input name="email" type="email" placeholder="email" />
+          <label>Password</label>
+          <input name="password" type="password" placeholder="Password" />
+          <button type="submit">Log in</button>
+      
+      </form>
+    </>
+  )
+}
+
+
+
+
+const PrivateRoute = (props) => {
+  const {currentUser } = useContext(AuthContext)
+  // const { currentUser } = useAuth()
+
+  let { as: Comp, ...moreProps} = props;
+
+  return currentUser ? <Comp {...moreProps} /> : <Login2 />
+  // return currentUser ? <Comp {...moreProps} /> : <Redirect to="/" replace={true} noThrow={true}  />
+
+  // return (
+  //   <Router
+  //     {...rest}
+  //     render={props => {
+  //       return currentUser ? <Component {...props} /> : <Login2 /> 
+  //       // return currentUser ? <Component {...props} /> : <Redirect to="/login" />
+  //     }}
+  //   ></Router>
+  // )
+}
+
+
+
+const Dash = () => {
+
+  return (
+    <>
+<h1>Dash</h1>
+    </>
+  )
 }

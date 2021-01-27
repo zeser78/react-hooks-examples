@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { app } from '../firebase'
+// import { db, firebase } from "./firebase";
 
 const db = app.firestore()
 
@@ -34,6 +35,10 @@ const FirestoreStorageExample = () => {
             name: username,
             avatar: fileUrl
         })
+    }
+
+    const handlerLogout = () => {
+      app.auth().signOut()
     }
 
     // useEffect(() => {
@@ -93,6 +98,8 @@ const FirestoreStorageExample = () => {
            })}
         </ul>
        </div>
+
+       <button onClick={handlerLogout}>Logout</button>
 
         </>
     )
