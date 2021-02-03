@@ -9,7 +9,7 @@ import UseRef from './useRef';
 import ScrollExample from './ScrollExample';
 import FirestoreStorageExample from './FirebaseExample/FirebaseStorageExample';
 import Home from './FirebaseExample/Home';
-import Builder from './FirebaseExample/Builder';
+import Builder from './Three-files/Builder';
 
 function App() {
   return (

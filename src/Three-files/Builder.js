@@ -8,8 +8,20 @@ const Builder = () => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
+    // Using Cursor
+    const cursor = {
+      x:0,
+      y:0
+    }
+window.addEventListener("mousemove", (event) => {
+cursor.x = event.clientX / window.innerWidth
+cursor.y = event.clientY / window.innerHeight
+})
+
+    //
     const renderCanvas = canvasRef.current;
 
+    // Camera
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -29,12 +41,14 @@ const Builder = () => {
     var material = new THREE.MeshBasicMaterial({ color: 0xffacac });
     var cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
-    camera.position.x = 5;
+    camera.position.z= 5;
     console.log(cube.position.length());
     console.log(cube.position.distanceTo(new THREE.Vector3(0, 1, 2)));
     console.log(cube.position.distanceTo(camera.position));
 
+    // Control
     const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true
 
     // Axes Helper
     const axesHelper = new THREE.AxesHelper();
@@ -94,6 +108,10 @@ const Builder = () => {
       group.rotation.x = elapsedTime * Math.PI * 2;
       //   elapsedTime * Math.PI * 2 // one revolution per second
       cube.position.y = Math.sin(elapsedTime);
+      // using cursor
+      // camera.position.x = Math.sin(cursor.x * Math.PI * 2) * 3
+      // damping, smooth control
+      controls.update()
       renderer.render(scene, camera);
     }
     animate();
