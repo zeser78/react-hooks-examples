@@ -83,7 +83,7 @@ const BuilderMaterial = () => {
     material.metalness = 0.7;
     material.roughness = 0.2;
 
-    const environmentMapTexture = cubeTextureLoader.load([]);
+    const environmentMapTexture = cubeTextureLoader.load();
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);

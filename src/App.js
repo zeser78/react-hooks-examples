@@ -13,6 +13,8 @@ import Builder from "./Three-files/Builder";
 import BuilderMaterial from "./Three-files/BuilderMaterial";
 import BuilderLight from "./Three-files/BuilderLight";
 import BuilderPhisics from "./Three-files/BuilderPhisics";
+import BuilderLoader from "./Three-files/BuilderLoader";
+import BuilderShader from "./Three-files/BuilderShader";
 
 function App() {
   return (
@@ -26,7 +28,7 @@ function App() {
       {/* <FirestoreStorageExample /> */}
       {/* using this for firestore auth */}
       {/* <Home /> */}
-      <BuilderPhisics />
+      <BuilderShader />
     </div>
   );
 }

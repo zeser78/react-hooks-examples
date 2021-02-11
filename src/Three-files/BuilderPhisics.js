@@ -3,6 +3,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
 import CANNON from "cannon";
+import cubeTexture from "../assets/floor_diffuse.png";
+import ringColor from "../assets/ring.jpg";
 
 const BuilderPhisics = () => {
   const canvasRef = useRef(null);
@@ -71,8 +73,13 @@ const BuilderPhisics = () => {
     spotLight.position.set(1, 2, 3);
     scene.add(spotLight);
     //DEBUG
-    // const gui = new dat.GUI();
-    // gui.add(materialStandard, "metalness").min(0).max(1).step(0.0001);
+    const gui = new dat.GUI();
+    const debugObject = {};
+
+    debugObject.createSphere = () => {
+      createSphere(Math.random() * 0.5, { x: 0, y: 3, z: 0 });
+    };
+    gui.add(debugObject, "createSphere");
     // gui.add(materialStandard, "roughness").min(0).max(1).step(0.0001);
     // gui.add(ambientLight, "intensity").min(0).max(1).step(0.01);
 
@@ -104,8 +111,6 @@ const BuilderPhisics = () => {
 
     scene.add(sphere, box, plane, torus);
 
-    const clock = new THREE.Clock();
-
     function onWindowResize() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
@@ -113,14 +118,105 @@ const BuilderPhisics = () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-    //Phisics
+    //PHYSICS
 
+    // World
     const world = new CANNON.World();
+    world.gravity.set(0, -9.82, 0);
+
+    world.allowSleep = true;
+    // Material
+    const concreteMaterial = new CANNON.Material("concrete");
+    const plasticMaterial = new CANNON.Material("plastic");
+
+    const concretePlasticContactMaterial = new CANNON.ContactMaterial(
+      concreteMaterial,
+      plasticMaterial,
+      {
+        friction: 0.1,
+        restitution: 0.9,
+      }
+    );
+
+    world.addContactMaterial(concretePlasticContactMaterial);
+    // simple way is creating one defaultMaterial
+
+    // Sphere
+    const sphereShape = new CANNON.Sphere(0.5);
+    const sphereBody = new CANNON.Body({
+      mass: 1,
+      position: new CANNON.Vec3(0, 3, 0),
+      shape: sphereShape,
+      material: plasticMaterial,
+    });
+    // apply force
+    sphereBody.applyLocalForce(
+      new CANNON.Vec3(150, 0, 0),
+      new CANNON.Vec3(0, 0, 0)
+    );
+    world.addBody(sphereBody);
+
+    // Floor
+    const floorShape = new CANNON.Plane();
+    const floorBody = new CANNON.Body();
+    floorBody.material = concreteMaterial;
+    floorBody.mass = 0;
+    floorBody.addShape(floorShape);
+    floorBody.quaternion.setFromAxisAngle(
+      new CANNON.Vec3(-1, 0, 0),
+      Math.PI * 0.5
+    );
+    world.addBody(floorBody);
+
+    // Utils - create sphere
+
+    const objectToUpdate = [];
+
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const environmentMapTexture = cubeTextureLoader.load(ringColor);
+
+    const createSphere = (radius, position) => {
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 20, 20),
+        new THREE.MeshStandardMaterial({
+          metalness: 0.3,
+          roughness: 0.4,
+          envMap: environmentMapTexture,
+        })
+      );
+
+      mesh.castShadow = true;
+      mesh.position.copy(position);
+      scene.add(mesh);
+      // Cannon.js body
+      const shape = new CANNON.Sphere(radius);
+      const body = new CANNON.Body({
+        mass: 1,
+        position: new CANNON.Vec3(0, 3, 0),
+        shape,
+        material: plasticMaterial,
+      });
+      body.position.copy(position);
+      world.addBody(body);
+      // Save in objects to update
+      objectToUpdate.push({
+        mesh: mesh,
+        body: body,
+      });
+    };
+
+    createSphere(0.5, { x: 1, y: 3, z: 0 });
+    createSphere(0.5, { x: 0, y: 2, z: 0 });
+    createSphere(0.5, { x: 0, y: 2, z: 1 });
+    // Clock
+    const clock = new THREE.Clock();
+    let oldElapsedTime = 0;
 
     function animate() {
       requestAnimationFrame(animate);
 
       const elapsedTime = clock.getElapsedTime();
+      const deltaTime = elapsedTime - oldElapsedTime;
       // update Objects
       //   sphere.rotation.y = 0.1 * elapsedTime;
       //   plane.rotation.y = 0.1 * elapsedTime;
@@ -130,10 +226,19 @@ const BuilderPhisics = () => {
       box.rotation.x = 0.15 * elapsedTime;
       torus.rotation.x = 0.15 * elapsedTime;
       onWindowResize();
-
+      // Update physics world
+      for (const object of objectToUpdate) {
+        object.mesh.position.copy(object.body.position);
+      }
+      // applying force
+      sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position);
+      world.step(1 / 60, deltaTime, 3);
+      sphere.position.copy(sphereBody.position);
+      //
       controls.update();
       renderer.render(scene, camera);
     }
+
     animate();
   }, []);
 
