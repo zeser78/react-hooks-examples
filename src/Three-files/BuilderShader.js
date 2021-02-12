@@ -34,7 +34,7 @@ const BuilderShader = () => {
       0.1,
       1000
     );
-    camera.position.z = 5;
+    camera.position.z = 1;
     scene.add(camera);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -68,25 +68,69 @@ const BuilderShader = () => {
 
     //Material
     console.log(testVertexShader);
-    const material = new THREE.RawShaderMaterial({
-      vertextShader: `
-
-`,
-      fragmentShader: `
-
-  `,
-    });
 
     //
-    const planeGeometry = new THREE.PlaneGeometry(3, 3);
+    // Geometry
+    const geometry = new THREE.PlaneGeometry(1, 1, 32, 32);
 
-    const plane = new THREE.Mesh(planeGeometry, material);
-    scene.add(plane);
-    // Using Clock to do rotation
-    const clock = new THREE.Clock();
+    const count = geometry.attributes.position.count;
+    const randoms = new Float32Array(count);
+
+    for (let i = 0; i < count; i++) {
+      randoms[i] = Math.random();
+    }
+
+    // Texture
+    const textureLoader = new THREE.TextureLoader();
+    const flagTexture = textureLoader.load(ringColor);
+    // Material
+    const material = new THREE.RawShaderMaterial({
+      vertexShader: testVertexShader,
+      fragmentShader: testFragmentShader,
+      transparent: true,
+      // wireframe: true,
+      uniforms: {
+        uFrequency: { value: new THREE.Vector2(10, 5) },
+        uTime: { value: 0 },
+        uColor: { value: new THREE.Color("orange") },
+        uTexture: { value: flagTexture },
+      },
+    });
+    // const material = new THREE.RawShaderMaterial({
+    //   vertexShader: testVertexShader,
+    //   fragmentShader: testFragmentShader,
+    //   transparent: true,
+    //   // wireframe: true,
+    //   uniforms: {
+    //     uFrequency: { value: new THREE.Vector2(10, 5) },
+    //     uTime: { value: 0 },
+    //     uColor: { value: new THREE.Color("orange") },
+    //     uTexture: { value: flagTexture },
+    //   },
+    // });
 
     //DEBUG
     const gui = new dat.GUI();
+    gui
+      .add(material.uniforms.uFrequency.value, "x")
+      .min(0)
+      .max(20)
+      .step(0.01)
+      .name("frequency x");
+    gui
+      .add(material.uniforms.uFrequency.value, "y")
+      .min(0)
+      .max(20)
+      .step(0.01)
+      .name("frequency y");
+
+    // Mesh
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.scale.y = 2 / 3;
+    scene.add(mesh);
+    // Using Clock to do rotation
+    const clock = new THREE.Clock();
+
     // gui.add(group.position, "x").min(-3).max(3).step(0.01).name("group X");
 
     function animate() {
@@ -94,6 +138,9 @@ const BuilderShader = () => {
 
       /// rotate using Time
       const elapsedTime = clock.getElapsedTime();
+
+      // Update Material
+      material.uniforms.uTime.value = elapsedTime;
       // cube.rotation.x += 0.01;
 
       // damping, smooth control
