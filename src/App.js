@@ -24,11 +24,11 @@ function App() {
       {/* <UseStatePrev />
       <UseEffectMultiple />
       <UseRef /> */}
-      {/* <ScrollExample /> */}
+      <ScrollExample />
       {/* <FirestoreStorageExample /> */}
       {/* using this for firestore auth */}
       {/* <Home /> */}
-      <BuilderShader />
+      {/* <BuilderMaterial /> */}
     </div>
   );
 }

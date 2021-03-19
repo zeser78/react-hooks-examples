@@ -1,11 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import {
-  CubeReflectionMapping,
-  CubeTexture,
-  MeshBasicMaterial,
-  SkinnedMesh,
-} from "three";
+
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import * as dat from "dat.gui";
@@ -27,7 +22,7 @@ const BuilderMaterial = () => {
       0.1,
       1000
     );
-    camera.position.z = 3;
+    camera.position.z = 4;
     scene.add(camera);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -83,7 +78,7 @@ const BuilderMaterial = () => {
     material.metalness = 0.7;
     material.roughness = 0.2;
 
-    const environmentMapTexture = cubeTextureLoader.load();
+    // const environmentMapTexture = cubeTextureLoader.load();
 
     // Lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
