@@ -15,20 +15,32 @@ import BuilderLight from "./Three-files/BuilderLight";
 import BuilderPhisics from "./Three-files/BuilderPhisics";
 import BuilderLoader from "./Three-files/BuilderLoader";
 import BuilderShader from "./Three-files/BuilderShader";
+import FetchingApp from "./FetchData/FetchingApp";
+import CarouselExample from "./CarouselExamples";
+import MenuApp from "./MenuExamples/MenuApp";
+import SlideExample from "./SliderExample";
+import NavBarExample from "./NavBarExample";
+import SidebarApp from "./Sidebar/SidebarApp";
 
 function App() {
   return (
     <div className="App">
       {/* <UseReducer/>
       <UseContext /> */}
-      {/* <UseStatePrev />
+      <UseStatePrev />
       <UseEffectMultiple />
-      <UseRef /> */}
-      <ScrollExample />
+      <UseRef />
+      {/* <ScrollExample /> */}
       {/* <FirestoreStorageExample /> */}
       {/* using this for firestore auth */}
       {/* <Home /> */}
       {/* <BuilderMaterial /> */}
+      {/* <FetchingApp /> */}
+      {/* <CarouselExample /> */}
+      {/* <MenuApp /> */}
+      {/* <SlideExample /> */}
+      {/* <NavBarExample /> */}
+      {/* <SidebarApp /> */}
     </div>
   );
 }
