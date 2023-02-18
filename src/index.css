@@ -18,10 +18,10 @@ code {
   margin: 0 auto;
   overflow: hidden;
   max-width: 100%;
+  white-space: nowrap;
 }
 
 .slideshowSlider {
-  white-space: nowrap;
   transition: ease 1000ms;
 }
 

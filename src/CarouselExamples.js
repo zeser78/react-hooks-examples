@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import "./index.css";
 
 const CarouselExample = () => {
-  const colors = ["#0088FE", "#00C49F", "#FFBB28"];
-  const delay = 2500;
+  const colors = ["#0088FE", "#00C49F", "#FFBB28", "#CCC", "pink"];
+  const delay = 5000;
 
   const [index, setIndex] = React.useState(0);
   const timeoutRef = React.useRef(null);
@@ -36,7 +36,9 @@ const CarouselExample = () => {
         style={{ transform: `translate3d(${-index * 100}%, 0, 0)` }}
       >
         {colors.map((backgroundColor, index) => (
-          <div className="slide" key={index} style={{ backgroundColor }}></div>
+          <div className="slide" key={index} style={{ backgroundColor }}>
+            <h1>example</h1>
+          </div>
         ))}
       </div>
 

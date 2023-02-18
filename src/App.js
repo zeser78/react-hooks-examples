@@ -21,15 +21,17 @@ import MenuApp from "./MenuExamples/MenuApp";
 import SlideExample from "./SliderExample";
 import NavBarExample from "./NavBarExample";
 import SidebarApp from "./Sidebar/SidebarApp";
+import RangeSlider from "./RangeSlider";
+import SliderExampleSimple from "./SliderExampleSimple";
 
 function App() {
   return (
     <div className="App">
       {/* <UseReducer/>
       <UseContext /> */}
-      <UseStatePrev />
-      <UseEffectMultiple />
-      <UseRef />
+      {/* <UseStatePrev />*/}
+      {/* <UseEffectMultiple /> */}
+      {/* <UseRef />*/}
       {/* <ScrollExample /> */}
       {/* <FirestoreStorageExample /> */}
       {/* using this for firestore auth */}
@@ -37,10 +39,13 @@ function App() {
       {/* <BuilderMaterial /> */}
       {/* <FetchingApp /> */}
       {/* <CarouselExample /> */}
+      <SliderExampleSimple />
       {/* <MenuApp /> */}
       {/* <SlideExample /> */}
       {/* <NavBarExample /> */}
       {/* <SidebarApp /> */}
+      {/* <BuilderLoader /> */}
+      {/* <RangeSlider /> */}
     </div>
   );
 }
